@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Btoolstest</title>
+  <style>
+    body { margin:0; font-family:sans-serif; }
+    #bar { padding:5px; background:#eee; }
+    #url { width:80%; }
+  </style>
+</head>
+<body>
+  <div id="bar">
+    <input id="url" placeholder="Enter URL" />
+    <button onclick="openSite()">Go</button>
+    <button onclick="toggleAltMode()">Toggle Alt Mode</button>
+  </div>
+
+  <script>
+    // Flag to track alternate mode
+    let useAlt = false;
+
+    function toggleAltMode() {
+      useAlt = !useAlt;
+      alert("Alt mode: " + (useAlt ? "ON" : "OFF"));
+    }
+
+    function openSite() {
+      const rawUrl = document.getElementById('url').value.trim();
+
+      // Open a new blank tab first
+      const newTab = window.open("about:blank", "_blank");
+
+      if (useAlt) {
+        // Placeholder: replace this string with your alternate URL later
+        const altUrl = "ILL_PUT_THE_URL_HERE_LATER" + encodeURIComponent(rawUrl);
+        newTab.location = altUrl;
+      } else {
+        // Normal mode: go directly to the typed URL
+        newTab.location = rawUrl;
+      }
+    }
+  </script>
+</body>
+</html>
