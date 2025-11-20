@@ -136,7 +136,7 @@
       doc.body.appendChild(h1);
 
       const iframe = doc.createElement("iframe");
-      iframe.src = useAlt ? "ILL_PUT_THE_URL_HERE_LATER" + encodeURIComponent(url) : url;
+      iframe.src = useAlt ? "https://btools-server.onrender.com" + encodeURIComponent(url) : url;
       doc.body.appendChild(iframe);
 
       const script = doc.createElement("script");
