@@ -3,41 +3,149 @@
 <head>
   <title>Btoolstest</title>
   <style>
-    body { margin:0; font-family:sans-serif; }
-    #bar { padding:5px; background:#eee; }
-    #url { width:80%; }
+    body {
+      margin:0;
+      font-family:sans-serif;
+      background:#fff;
+      color:#000;
+      transition: background 0.3s, color 0.3s;
+    }
+    #bar {
+      padding:5px;
+      background:#eee;
+      display:flex;
+      align-items:center;
+      gap:10px;
+    }
+    #urlInput {
+      width:50%;
+    }
+    button {
+      margin-left:5px;
+    }
+    /* Dark mode styles */
+    body.dark {
+      background:#121212;
+      color:#f0f0f0;
+    }
+    body.dark #bar {
+      background:#333;
+    }
+    body.dark input, body.dark button {
+      background:#222;
+      color:#f0f0f0;
+      border:1px solid #555;
+    }
+
+    /* Switch styling */
+    .switch {
+      position: relative;
+      display: inline-block;
+      width: 50px;
+      height: 24px;
+    }
+    .switch input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+    .slider {
+      position: absolute;
+      cursor: pointer;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background-color: red;
+      transition: .4s;
+      border-radius: 24px;
+    }
+    .slider:before {
+      position: absolute;
+      content: "";
+      height: 18px;
+      width: 18px;
+      left: 3px;
+      bottom: 3px;
+      background-color: white;
+      transition: .4s;
+      border-radius: 50%;
+    }
+    input:checked + .slider {
+      background-color: green;
+    }
+    input:checked + .slider:before {
+      transform: translateX(26px);
+    }
   </style>
 </head>
 <body>
   <div id="bar">
-    <input id="url" placeholder="Enter URL" />
-    <button onclick="openSite()">Go</button>
-    <button onclick="toggleAltMode()">Toggle Alt Mode</button>
+    <input id="urlInput" placeholder="Enter URL" />
+    <button onclick="openWindow()">Open</button>
+    <label class="switch">
+      <input type="checkbox" id="altToggle" onchange="toggleAltMode()">
+      <span class="slider"></span>
+    </label>
+    <span id="altLabel">Alt Mode OFF</span>
+    <button onclick="toggleDark()">Dark Mode</button>
   </div>
 
   <script>
-    // Flag to track alternate mode
     let useAlt = false;
 
     function toggleAltMode() {
-      useAlt = !useAlt;
-      alert("Alt mode: " + (useAlt ? "ON" : "OFF"));
+      useAlt = document.getElementById("altToggle").checked;
+      document.getElementById("altLabel").innerText = useAlt ? "Alt Mode ON" : "Alt Mode OFF";
     }
 
-    function openSite() {
-      const rawUrl = document.getElementById('url').value.trim();
-
-      // Open a new blank tab first
-      const newTab = window.open("about:blank", "_blank");
-
-      if (useAlt) {
-        // Placeholder: replace this string with your alternate URL later
-        const altUrl = "ILL_PUT_THE_URL_HERE_LATER" + encodeURIComponent(rawUrl);
-        newTab.location = altUrl;
-      } else {
-        // Normal mode: go directly to the typed URL
-        newTab.location = rawUrl;
+    function openWindow() {
+      const url = document.getElementById("urlInput").value;
+      if (!url) {
+        alert("Please enter a website first!");
+        return;
       }
+
+      const win = window.open("about:blank", "_blank");
+      const doc = win.document;
+      doc.title = "New Tab";
+
+      const style = doc.createElement("style");
+      style.innerHTML = `
+        body {
+          background: black;
+          color: white;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          justify-content: center;
+          height: 100vh;
+          margin: 0;
+        }
+        h1 {
+          margin-bottom: 20px;
+        }
+        iframe {
+          width: 99%;
+          height: 800px;
+          border: 2px solid white;
+          border-radius: 8px;
+        }
+      `;
+      doc.head.appendChild(style);
+
+      const h1 = doc.createElement("h1");
+      h1.innerText = "Ad Free For Now!";
+      doc.body.appendChild(h1);
+
+      const iframe = doc.createElement("iframe");
+      iframe.src = useAlt ? "ILL_PUT_THE_URL_HERE_LATER" + encodeURIComponent(url) : url;
+      doc.body.appendChild(iframe);
+
+      const script = doc.createElement("script");
+      script.innerHTML = `console.log("Iframe loaded with: ${url}");`;
+      doc.body.appendChild(script);
+    }
+
+    function toggleDark() {
+      document.body.classList.toggle("dark");
     }
   </script>
 </body>
